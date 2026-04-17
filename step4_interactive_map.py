@@ -9,7 +9,8 @@ transit = gpd.read_file("outputs/transit_stops_clean.geojson")
 grocery = gpd.read_file("outputs/grocery_stores.geojson")
 
 m = folium.Map(location=[35.6925, 139.7410], zoom_start=15,
-               tiles="CartoDB Voyager", attr=" ")
+               tiles="CartoDB Voyager", attr=" ",
+               zoom_control=False)
 
 # ── Coordinates of POIs outside the network — exclude these ───────────
 EXCLUDE_COORDS = [
@@ -135,7 +136,7 @@ function redraw() {{
             }}
         }});
         activeLayers[key] = layers;
-}});
+    }});
 }}
 
 function togglePoi(poi) {{
@@ -209,9 +210,9 @@ function drawMarkers() {{
     markerData.forEach(function(d) {{
         if (!markerLayers[d.type]) markerLayers[d.type] = [];
         var icon = L.divIcon({{
-            html: '<div style="font-size:18px; text-align:center; line-height:1; background:white; border:2.5px solid ' + markerColors[d.type] + '; border-radius:50%; width:32px; height:32px; display:flex; align-items:center; justify-content:center; box-shadow: 0 2px 6px rgba(0,0,0,0.25);">' + markerIcons[d.type] + '</div>',
-            iconSize: [32, 32], iconAnchor: [16, 16], className: ""
-            }});
+            html: '<div style="font-size:16px; text-align:center; line-height:1; background:white; border:2.5px solid ' + markerColors[d.type] + '; border-radius:50%; width:28px; height:28px; display:flex; align-items:center; justify-content:center; box-shadow: 0 2px 6px rgba(0,0,0,0.25);">' + markerIcons[d.type] + '</div>',
+            iconSize: [28, 28], iconAnchor: [14, 14], className: ""
+        }});
         var marker = L.marker([d.lat, d.lon], {{icon: icon}})
             .bindTooltip("<b>" + d.name + "</b><br>" + d.label)
             .addTo(map);
@@ -222,97 +223,101 @@ function drawMarkers() {{
 window.addEventListener("load", function() {{
     setTimeout(function() {{
         var mapKeys = Object.keys(window).filter(function(k) {{ return k.startsWith("map_"); }});
-        if (mapKeys.length > 0) map = window[mapKeys[0]];
+        if (mapKeys.length > 0) {{
+            map = window[mapKeys[0]];
+            L.control.zoom({{ position: 'bottomright' }}).addTo(map);
+        }}
         drawMarkers();
     }}, 1000);
 }});
 </script>
 
 <div style="position: fixed; top: 10px; right: 10px; z-index: 1000;
-     background: white; padding: 16px 20px; border-radius: 12px;
-     box-shadow: 0 4px 12px rgba(0,0,0,0.2); font-family: Arial; font-size: 12px;
-     display: flex; flex-direction: column; gap: 12px; min-width: 220px; font-size: 11px;">
+     background: white; padding: 12px 16px; border-radius: 12px;
+     box-shadow: 0 4px 12px rgba(0,0,0,0.2); font-family: Arial;
+     display: flex; flex-direction: column; gap: 8px; min-width: 200px;
+     max-width: 230px; font-size: 11px;">
 
     <div style="display:flex; justify-content:space-between; align-items:center;">
-        <b style="font-size:13px; color:#222;">Bancho Connectivity</b>
+        <b style="font-size:12px; color:#222;">Bancho Connectivity</b>
         <button onclick="clearAll()"
-            style="padding:4px 12px; border:none; border-radius:6px; cursor:pointer;
-                   background:#ff4444; color:white; font-size:11px; font-weight:bold;">
+            style="padding:3px 8px; border:none; border-radius:6px; cursor:pointer;
+                   background:#ff4444; color:white; font-size:10px; font-weight:bold;">
             ✕ Clear all
         </button>
     </div>
 
-    <div style="font-size:10px; color:#888;">
-        Select from each row to layer isochrones on the map
+    <div style="font-size:9px; color:#888;">
+        Select from each row to layer isochrones
     </div>
 
-    <div style="display:flex; flex-direction:column; gap:6px;">
-        <span style="font-weight:bold; color:#555; font-size:11px;">📍 POI TYPE</span>
-        <div style="display:flex; gap:6px; flex-wrap:wrap;">
+    <div style="display:flex; flex-direction:column; gap:4px;">
+        <span style="font-weight:bold; color:#555; font-size:10px;">📍 POI TYPE</span>
+        <div style="display:flex; gap:4px; flex-wrap:wrap;">
             <button id="poi-transit" class="sel-btn" onclick="togglePoi('transit')"
-                style="padding:6px 10px; border:none; border-radius:6px; cursor:pointer;
-                       background:#f0f0f0; color:#333; font-size:11px;">🚌 Transit</button>
+                style="padding:4px 7px; border:none; border-radius:6px; cursor:pointer;
+                       background:#f0f0f0; color:#333; font-size:10px;">🚌 Transit</button>
             <button id="poi-school" class="sel-btn" onclick="togglePoi('school')"
-                style="padding:6px 10px; border:none; border-radius:6px; cursor:pointer;
-                       background:#f0f0f0; color:#333; font-size:11px;">🎓 Schools</button>
+                style="padding:4px 7px; border:none; border-radius:6px; cursor:pointer;
+                       background:#f0f0f0; color:#333; font-size:10px;">🎓 Schools</button>
             <button id="poi-medical" class="sel-btn" onclick="togglePoi('medical')"
-                style="padding:6px 10px; border:none; border-radius:6px; cursor:pointer;
-                       background:#f0f0f0; color:#333; font-size:11px;">🏥 Medical</button>
+                style="padding:4px 7px; border:none; border-radius:6px; cursor:pointer;
+                       background:#f0f0f0; color:#333; font-size:10px;">🏥 Medical</button>
             <button id="poi-grocery" class="sel-btn" onclick="togglePoi('grocery')"
-                style="padding:6px 10px; border:none; border-radius:6px; cursor:pointer;
-                       background:#f0f0f0; color:#333; font-size:11px;">🛒 Grocery</button>
+                style="padding:4px 7px; border:none; border-radius:6px; cursor:pointer;
+                       background:#f0f0f0; color:#333; font-size:10px;">🛒 Grocery</button>
         </div>
     </div>
 
-    <div style="display:flex; flex-direction:column; gap:6px;">
-        <span style="font-weight:bold; color:#555; font-size:11px;">🚶 AGE GROUP</span>
-        <div style="display:flex; gap:6px;">
+    <div style="display:flex; flex-direction:column; gap:4px;">
+        <span style="font-weight:bold; color:#555; font-size:10px;">🚶 AGE GROUP</span>
+        <div style="display:flex; gap:4px; flex-wrap:wrap;">
             <button id="age-adult" class="sel-btn" onclick="toggleAge('adult')"
-                style="padding:6px 12px; border:none; border-radius:6px; cursor:pointer;
-                       background:#f0f0f0; color:#333; font-size:11px;">Adult (4.8 km/h)</button>
+                style="padding:4px 7px; border:none; border-radius:6px; cursor:pointer;
+                       background:#f0f0f0; color:#333; font-size:10px;">Adult</button>
             <button id="age-child" class="sel-btn" onclick="toggleAge('child')"
-                style="padding:6px 12px; border:none; border-radius:6px; cursor:pointer;
-                       background:#f0f0f0; color:#333; font-size:11px;">Child (2.8 km/h)</button>
+                style="padding:4px 7px; border:none; border-radius:6px; cursor:pointer;
+                       background:#f0f0f0; color:#333; font-size:10px;">Child</button>
             <button id="age-elderly" class="sel-btn" onclick="toggleAge('elderly')"
-                style="padding:6px 12px; border:none; border-radius:6px; cursor:pointer;
-                       background:#f0f0f0; color:#333; font-size:11px;">Elderly (3.0 km/h)</button>
+                style="padding:4px 7px; border:none; border-radius:6px; cursor:pointer;
+                       background:#f0f0f0; color:#333; font-size:10px;">Elderly</button>
         </div>
     </div>
 
-    <div style="display:flex; flex-direction:column; gap:6px;">
-        <span style="font-weight:bold; color:#555; font-size:11px;">⏱ WALK TIME</span>
-        <div style="display:flex; gap:6px;">
+    <div style="display:flex; flex-direction:column; gap:4px;">
+        <span style="font-weight:bold; color:#555; font-size:10px;">⏱ WALK TIME</span>
+        <div style="display:flex; gap:4px;">
             <button id="min-5" class="sel-btn" onclick="toggleMin(5)"
-                style="padding:6px 20px; border:none; border-radius:6px; cursor:pointer;
-                       background:#f0f0f0; color:#333; font-size:11px;">5 min</button>
+                style="padding:4px 14px; border:none; border-radius:6px; cursor:pointer;
+                       background:#f0f0f0; color:#333; font-size:10px;">5 min</button>
             <button id="min-10" class="sel-btn" onclick="toggleMin(10)"
-                style="padding:6px 20px; border:none; border-radius:6px; cursor:pointer;
-                       background:#f0f0f0; color:#333; font-size:11px;">10 min</button>
+                style="padding:4px 14px; border:none; border-radius:6px; cursor:pointer;
+                       background:#f0f0f0; color:#333; font-size:10px;">10 min</button>
         </div>
     </div>
 
-    <div style="border-top:1px solid #eee; padding-top:10px;">
-        <span style="font-weight:bold; color:#555; font-size:11px;">👁 SHOW/HIDE MARKERS</span>
-        <div style="display:flex; gap:6px; margin-top:6px; flex-wrap:wrap;">
+    <div style="border-top:1px solid #eee; padding-top:8px;">
+        <span style="font-weight:bold; color:#555; font-size:10px;">👁 SHOW/HIDE MARKERS</span>
+        <div style="display:flex; gap:4px; margin-top:4px; flex-wrap:wrap;">
             <button id="tog-transit" onclick="toggleMarker('transit')"
-                style="padding:5px 10px; border:none; border-radius:6px; cursor:pointer;
-                       background:#1565C0; color:white; font-size:11px;">🚌 Transit</button>
+                style="padding:3px 7px; border:none; border-radius:6px; cursor:pointer;
+                       background:#1565C0; color:white; font-size:10px;">🚌</button>
             <button id="tog-school" onclick="toggleMarker('school')"
-                style="padding:5px 10px; border:none; border-radius:6px; cursor:pointer;
-                       background:#F57C00; color:white; font-size:11px;">🎓 Schools</button>
+                style="padding:3px 7px; border:none; border-radius:6px; cursor:pointer;
+                       background:#F57C00; color:white; font-size:10px;">🎓</button>
             <button id="tog-medical" onclick="toggleMarker('medical')"
-                style="padding:5px 10px; border:none; border-radius:6px; cursor:pointer;
-                       background:#D32F2F; color:white; font-size:11px;">🏥 Medical</button>
+                style="padding:3px 7px; border:none; border-radius:6px; cursor:pointer;
+                       background:#D32F2F; color:white; font-size:10px;">🏥</button>
             <button id="tog-grocery" onclick="toggleMarker('grocery')"
-                style="padding:5px 10px; border:none; border-radius:6px; cursor:pointer;
-                       background:#388E3C; color:white; font-size:11px;">🛒 Grocery</button>
+                style="padding:3px 7px; border:none; border-radius:6px; cursor:pointer;
+                       background:#388E3C; color:white; font-size:10px;">🛒</button>
         </div>
     </div>
 
-    <div style="border-top:1px solid #eee; padding-top:8px; font-size:10px; color:#888; line-height:1.8;">
-        <span style="color:#66BB6A; font-size:13px;">●</span> Adult &nbsp;
-        <span style="color:#4FC3F7; font-size:13px;">●</span> Child &nbsp;
-        <span style="color:#FFA726; font-size:13px;">●</span> Elderly
+    <div style="border-top:1px solid #eee; padding-top:6px; font-size:9px; color:#888; line-height:1.8;">
+        <span style="color:#66BB6A; font-size:11px;">●</span> Adult &nbsp;
+        <span style="color:#4FC3F7; font-size:11px;">●</span> Child &nbsp;
+        <span style="color:#FFA726; font-size:11px;">●</span> Elderly
     </div>
 </div>
 """
@@ -321,10 +326,10 @@ m.get_root().html.add_child(folium.Element(control_html))
 
 title_html = """
 <div style="position: fixed; top: 10px; left: 10px; z-index: 1000;
-     background-color: #1a1a2e; padding: 10px 15px; border-radius: 8px;
+     background-color: #1a1a2e; padding: 8px 12px; border-radius: 8px;
      box-shadow: 2px 2px 6px rgba(0,0,0,0.4); font-family: Arial;">
-    <b style="font-size:14px; color:white;">Bancho Connectivity Assessment</b><br>
-    <span style="font-size:11px; color:#aaa;">Walkable catchment areas by age group & POI type</span>
+    <b style="font-size:13px; color:white;">Bancho Connectivity Assessment</b><br>
+    <span style="font-size:10px; color:#aaa;">Walkable catchment areas by age group & POI type</span>
 </div>
 """
 m.get_root().html.add_child(folium.Element(title_html))
