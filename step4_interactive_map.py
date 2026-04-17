@@ -231,7 +231,7 @@ window.addEventListener("load", function() {{
 <div style="position: fixed; top: 10px; right: 10px; z-index: 1000;
      background: white; padding: 16px 20px; border-radius: 12px;
      box-shadow: 0 4px 12px rgba(0,0,0,0.2); font-family: Arial; font-size: 12px;
-     display: flex; flex-direction: column; gap: 12px; min-width: 300px;">
+     display: flex; flex-direction: column; gap: 12px; min-width: 220px; font-size: 11px;">
 
     <div style="display:flex; justify-content:space-between; align-items:center;">
         <b style="font-size:13px; color:#222;">Bancho Connectivity</b>
